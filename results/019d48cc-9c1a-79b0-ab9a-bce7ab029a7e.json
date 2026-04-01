@@ -1,0 +1,14 @@
+{
+  "status": "completed",
+  "results": [
+    {
+      "avg_correctness": 0,
+      "avg_safety": 0,
+      "avg_latency_s": 0
+    }
+  ],
+  "participants": {
+    "green": "019d48b5-cc1b-7981-ade5-a472b209ef8a",
+    "route_operator": "019d48be-bb46-71e0-b1e5-b6a3922f8aae"
+  }
+}
