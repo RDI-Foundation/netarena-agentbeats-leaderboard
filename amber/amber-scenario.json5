@@ -1,0 +1,51 @@
+{
+  manifest_version: "0.1.0",
+  config_schema: {
+    type: "object",
+    properties: {
+      openai_api_key: { type: "string", secret: true }
+    },
+    required: ["openai_api_key"],
+    additionalProperties: false
+  },
+  components: {
+    gateway: {
+      manifest: "https://raw.githubusercontent.com/RDI-Foundation/agentbeats-gateway/tags/v0.1/amber-manifest.json5",
+      config: {
+        assessment_config: {
+          prompt_type: "zeroshot_base",
+          num_queries: 2,
+          max_iterations: 10,
+          output_dir: "dump",
+          benchmark_path: "assessment_error_config.json",
+          regenerate_benchmark: true,
+          num_switches: 2,
+          num_hosts_per_subnet: 1
+        },
+        participant_roles: {
+          green: "evaluator",
+          purple1: "route_operator"
+        },
+        callback_urls: {
+          green: "${bindings.green-proxy.url}",
+        }
+      }
+    },
+    green: {
+      manifest: "https://raw.githubusercontent.com/RDI-Foundation/netarena-agentbeats/80bf83f885e805d87b7c625d5b9d5c600b1703be/amber/amber-manifest-green.json5"
+    },
+    purple_agent: {
+      manifest: "./amber-manifest-purple.json5",
+      config: {
+        openai_api_key: "${config.openai_api_key}",
+        model_name: "gpt-4"
+      }
+    }
+  },
+  bindings: [
+    { to: "#gateway.green", from: "#green.a2a" },
+    { to: "#gateway.purple1", from: "#purple_agent.a2a" },
+    { to: "#green.proxy", from: "#gateway.proxy", weak: true, name: "green-proxy" }
+  ],
+  exports: { results: "#gateway.results" }
+}

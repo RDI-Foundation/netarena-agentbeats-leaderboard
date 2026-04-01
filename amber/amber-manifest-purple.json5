@@ -1,0 +1,40 @@
+{
+  manifest_version: "0.1.0",
+  program: {
+    image: "ghcr.io/froot-netsys/a2a_llm:latest",
+    entrypoint: [
+      "uv", 
+      "run", 
+      "litellm_a2a_server.py",
+      "--host", 
+      "0.0.0.0", 
+      "--port", 
+      "8080"
+    ],
+    env: {
+      OPENAI_API_KEY: "${config.openai_api_key}",
+      MODEL_NAME: "${config.model_name}",
+      LOG_LEVEL: "INFO"
+    },
+    network: {
+      endpoints: [
+        { name: "endpoint", port: 8080 }
+      ]
+    }
+  },
+  config_schema: {
+    type: "object",
+    properties: {
+      openai_api_key: { type: "string", secret: true },
+      model_name: { type: "string" }
+    },
+    required: ["openai_api_key", "model_name"],
+    additionalProperties: false
+  },
+  provides: {
+    a2a: { kind: "a2a", endpoint: "endpoint" }
+  },
+  exports: {
+    a2a: "a2a"
+  }
+}
