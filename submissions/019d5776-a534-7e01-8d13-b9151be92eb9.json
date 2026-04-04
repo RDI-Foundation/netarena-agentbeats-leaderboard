@@ -1,0 +1,80 @@
+{
+  "manifest_version": "0.1.0",
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "malt_operator_model_name": {
+        "type": "string"
+      },
+      "malt_operator_openai_api_key": {
+        "type": "string",
+        "secret": true
+      }
+    },
+    "required": [
+      "malt_operator_openai_api_key",
+      "malt_operator_model_name"
+    ],
+    "additionalProperties": false
+  },
+  "components": {
+    "gateway": {
+      "manifest": "https://raw.githubusercontent.com/RDI-Foundation/agentbeats-gateway/refs/tags/v0.3/amber-manifest.json5",
+      "config": {
+        "assessment_config": {
+          "prompt_type": "zeroshot_base",
+          "num_queries": 3,
+          "complexity_level": [
+            "level1",
+            "level2",
+            "level3"
+          ],
+          "output_dir": "dump",
+          "output_file": "query_output.jsonl",
+          "benchmark_path": "assessment_queries.jsonl",
+          "regenerate_benchmark": true
+        },
+        "participant_roles": {
+          "green": "green",
+          "purple1": "malt_operator"
+        },
+        "callback_urls": {}
+      }
+    },
+    "green": {
+      "manifest": "https://raw.githubusercontent.com/RDI-Foundation/netarena-agentbeats/5e54ccb1394658818149e510812988175216314a/amber/amber-manifest-green.json5",
+      "config": {}
+    },
+    "malt_operator": {
+      "manifest": "https://raw.githubusercontent.com/RDI-Foundation/netarena-agentbeats-leaderboard/refs/heads/main/amber/amber-manifest-purple.json5",
+      "config": {
+        "model_name": "${config.malt_operator_model_name}",
+        "openai_api_key": "${config.malt_operator_openai_api_key}"
+      }
+    }
+  },
+  "bindings": [
+    {
+      "to": "#gateway.green",
+      "from": "#green.a2a"
+    },
+    {
+      "to": "#gateway.purple1",
+      "from": "#malt_operator.a2a"
+    },
+    {
+      "to": "#green.proxy",
+      "from": "#gateway.proxy",
+      "weak": true
+    }
+  ],
+  "exports": {
+    "results": "#gateway.results"
+  },
+  "metadata": {
+    "agentbeats_ids": {
+      "green": "019d48b5-cc1b-7981-ade5-a472b209ef8a",
+      "malt_operator": "019d48be-bb46-71e0-b1e5-b6a3922f8aae"
+    }
+  }
+}
