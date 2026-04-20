@@ -1,0 +1,22 @@
+{
+  "image_digests": {
+    "/gateway": "ghcr.io/rdi-foundation/agentbeats-gateway@sha256:3f9976889c598092dc4273312ec431cbc48bbe064ff65b5613425f4990bc1d4c",
+    "/green": "ghcr.io/froot-netsys/malt_agent@sha256:7b6c415de4847a03c6114ad90a1ba19d056f8a3eb9c866eaf08b9ab35c057629",
+    "/malt_operator": "tenalirama2026/malt-agentx@sha256:c9b277979a530d4db879aa5f7a2434630f7e6e776da4e4f9e03445aaf7cc65ee"
+  },
+  "manifest_digests": {
+    "/": "sha256:SXQpI4IXM97i9vtVLdOrqjXZeajfVP3Au1vtWsEoORA=",
+    "/gateway": "sha256:55vdRwO+54k8WBZhh3nrN6Gn7cnk/+hm1dG+xt/GYSE=",
+    "/green": "sha256:IwXUeADvuw2HadTdMkxVSCgBzFtghCdJnPSklJrQksY=",
+    "/malt_operator": "sha256:81mfn3OVPl3/EuXQXsbaWOsz6qA+p/rmynSHXlfY0eM="
+  },
+  "timestamp": "2026-04-20T05:53:14Z",
+  "github_actions": {
+    "run_url": "https://github.com/RDI-Foundation/netarena-agentbeats-leaderboard/actions/runs/24650669496",
+    "ref": "refs/pull/14/merge",
+    "sha": "c798962f9b4b35c05d281f7eb5f5b496e852026b",
+    "repository_url": "https://github.com/RDI-Foundation/netarena-agentbeats-leaderboard",
+    "workflow_ref": "RDI-Foundation/netarena-agentbeats-leaderboard/.github/workflows/quick-submit.yml@refs/pull/14/merge",
+    "workflow_sha": "c798962f9b4b35c05d281f7eb5f5b496e852026b"
+  }
+}
