@@ -1,0 +1,88 @@
+{
+  "manifest_version": "0.1.0",
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "malt_operator_nebius_api_key": {
+        "type": "string",
+        "secret": true
+      },
+      "malt_operator_nvidia_api_key": {
+        "type": "string",
+        "secret": true
+      },
+      "malt_operator_openai_api_key": {
+        "type": "string",
+        "secret": true
+      }
+    },
+    "required": [
+      "malt_operator_nvidia_api_key",
+      "malt_operator_nebius_api_key",
+      "malt_operator_openai_api_key"
+    ],
+    "additionalProperties": false
+  },
+  "components": {
+    "gateway": {
+      "manifest": "https://raw.githubusercontent.com/RDI-Foundation/agentbeats-gateway/refs/tags/v0.3/amber-manifest.json5",
+      "config": {
+        "assessment_config": {
+          "prompt_type": "zeroshot_base",
+          "num_queries": 3,
+          "complexity_level": [
+            "level1",
+            "level2",
+            "level3"
+          ],
+          "output_dir": "dump",
+          "output_file": "query_output.jsonl",
+          "benchmark_path": "assessment_queries.jsonl",
+          "regenerate_benchmark": true,
+          "num_shards": 4
+        },
+        "participant_roles": {
+          "green": "green",
+          "purple1": "malt_operator"
+        },
+        "callback_urls": {}
+      }
+    },
+    "green": {
+      "manifest": "https://raw.githubusercontent.com/RDI-Foundation/netarena-agentbeats/5e54ccb1394658818149e510812988175216314a/amber/amber-manifest-green.json5",
+      "config": {}
+    },
+    "malt_operator": {
+      "manifest": "https://raw.githubusercontent.com/tenalirama2005/netarena-agentbeats-leaderboard/main/amber/amber-manifest-purple.json5",
+      "config": {
+        "nebius_api_key": "${config.malt_operator_nebius_api_key}",
+        "nvidia_api_key": "${config.malt_operator_nvidia_api_key}",
+        "openai_api_key": "${config.malt_operator_openai_api_key}"
+      }
+    }
+  },
+  "bindings": [
+    {
+      "to": "#gateway.green",
+      "from": "#green.a2a"
+    },
+    {
+      "to": "#gateway.purple1",
+      "from": "#malt_operator.a2a"
+    },
+    {
+      "to": "#green.proxy",
+      "from": "#gateway.proxy",
+      "weak": true
+    }
+  ],
+  "exports": {
+    "results": "#gateway.results"
+  },
+  "metadata": {
+    "agentbeats_ids": {
+      "green": "019d48b5-cc1b-7981-ade5-a472b209ef8a",
+      "malt_operator": "019da266-a931-7870-85db-cf5cb56edcc8"
+    }
+  }
+}
