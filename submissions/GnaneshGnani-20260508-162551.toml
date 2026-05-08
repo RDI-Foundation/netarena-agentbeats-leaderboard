@@ -1,0 +1,24 @@
+[green_agent]
+agentbeats_id = "019d48b5-cc1b-7981-ade5-a472b209ef8a"
+image = "ghcr.io/froot-netsys/malt_agent:latest"
+env = { LOG_LEVEL = "INFO" }
+
+[[participants]]
+agentbeats_id = "019de180-3447-74b2-91f5-25f6f0a8474c"
+image = "ghcr.io/gnaneshgnani/malt-purple-agent:v1"
+name = "malt_operator"
+[participants.env]
+    NEBIUS_API_KEY = "${NEBIUS_API_KEY}"
+    NEBIUS_API_BASE = "https://api.studio.nebius.ai/v1"
+    MODEL_NAME = "openai/Qwen/Qwen3-Next-80B-A3B-Thinking"
+    MALT_FEW_SHOT = "1"
+
+[config]
+# Manual README workflow submission: few-shot.
+prompt_type = "zeroshot_base"
+complexity_level = ["level1", "level2", "level3"]
+num_queries = 3
+output_dir = "dump"
+output_file = "query_output.jsonl"
+benchmark_path = "assessment_queries.jsonl"
+regenerate_query = true
