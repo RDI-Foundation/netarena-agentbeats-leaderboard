@@ -1,0 +1,111 @@
+{
+  "manifest_version": "0.1.0",
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "malt_operator_anthropic_api_key": {
+        "type": "string",
+        "secret": true
+      },
+      "malt_operator_azure_openai_api_version": {
+        "type": "string",
+        "description": "Azure OpenAI API version",
+        "default": "2025-04-01-preview"
+      },
+      "malt_operator_azure_openai_endpoint": {
+        "type": "string",
+        "description": "Azure OpenAI endpoint URL (e.g. https://your-resource.openai.azure.com/). Leave empty for standard OpenAI."
+      },
+      "malt_operator_cheap_model_name": {
+        "type": "string",
+        "description": "Fast/cheap LLM model for classification and simple tasks",
+        "default": "gpt-4o-mini"
+      },
+      "malt_operator_gemini_api_key": {
+        "type": "string",
+        "secret": true
+      },
+      "malt_operator_model_name": {
+        "type": "string",
+        "description": "Primary LLM model for complex reasoning tasks",
+        "default": "gpt-5.4"
+      },
+      "malt_operator_openai_api_key": {
+        "type": "string",
+        "secret": true
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  },
+  "components": {
+    "gateway": {
+      "manifest": "https://raw.githubusercontent.com/RDI-Foundation/agentbeats-gateway/refs/tags/v0.3/amber-manifest.json5",
+      "config": {
+        "assessment_config": {
+          "prompt_type": "zeroshot_base",
+          "num_queries": 3,
+          "complexity_level": [
+            "level1",
+            "level2",
+            "level3"
+          ],
+          "output_dir": "dump",
+          "output_file": "query_output.jsonl",
+          "benchmark_path": "assessment_queries.jsonl",
+          "regenerate_benchmark": true
+        },
+        "participant_roles": {
+          "green": "green",
+          "purple1": "malt_operator"
+        },
+        "callback_urls": {}
+      }
+    },
+    "green": {
+      "manifest": "https://raw.githubusercontent.com/RDI-Foundation/netarena-agentbeats/5e54ccb1394658818149e510812988175216314a/amber/amber-manifest-green.json5",
+      "config": {}
+    },
+    "malt_operator": {
+      "manifest": "https://raw.githubusercontent.com/paulwhitten/AgentWhetters-dispatch-general-purple/refs/heads/main/amber-manifest.json5",
+      "config": {
+        "anthropic_api_key": "${config.malt_operator_anthropic_api_key}",
+        "azure_openai_api_version": "${config.malt_operator_azure_openai_api_version}",
+        "azure_openai_endpoint": "${config.malt_operator_azure_openai_endpoint}",
+        "cheap_model_name": "${config.malt_operator_cheap_model_name}",
+        "gemini_api_key": "${config.malt_operator_gemini_api_key}",
+        "model_name": "${config.malt_operator_model_name}",
+        "openai_api_key": "${config.malt_operator_openai_api_key}"
+      }
+    }
+  },
+  "bindings": [
+    {
+      "to": "#gateway.green",
+      "from": "#green.a2a"
+    },
+    {
+      "to": "#gateway.purple1",
+      "from": "#malt_operator.a2a"
+    },
+    {
+      "to": "#green.proxy",
+      "from": "#gateway.proxy",
+      "weak": true
+    },
+    {
+      "to": "#malt_operator.proxy",
+      "from": "#gateway.proxy",
+      "weak": true
+    }
+  ],
+  "exports": {
+    "results": "#gateway.results"
+  },
+  "metadata": {
+    "agentbeats_ids": {
+      "green": "019d48b5-cc1b-7981-ade5-a472b209ef8a",
+      "malt_operator": "019e5ad0-cc7e-70f2-8a37-32f76d63b641"
+    }
+  }
+}
